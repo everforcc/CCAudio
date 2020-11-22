@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cc.ccaudio.dao.UserMainMapper">
+
+    <select id="checkUserName" resultType="cn.cc.ccaudio.dto.UserMain">
+        SELECT * FROM usermain e WHERE e.username=#{userName}
+    </select>
+
+    <select id="queryForLogin" resultType="cn.cc.ccaudio.dto.UserMain">
+        SELECT * FROM usermain e WHERE e.userName=#{userName} AND e.password=#{passWord} AND  e.effect=1
+    </select>
+
+    <select id="findUserByToken" resultType="cn.cc.ccaudio.dto.UserMain">
+        SELECT * FROM usermain e WHERE e.token=#{token}
+    </select>
+
+    <update id="updateTokenByUserName">
+        update usermain e set e.token=#{token} where e.id=#{id}
+    </update>
+
+</mapper>
