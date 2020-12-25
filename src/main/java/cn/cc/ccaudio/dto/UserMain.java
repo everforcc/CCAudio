@@ -2,12 +2,14 @@ package cn.cc.ccaudio.dto;
 
 import java.util.Date;
 
+// 用户信息表
 public class UserMain {
+    private static final long serialVersionUID = 1L;
     /* */
     private int id;
-    /* */
+    /* 用户名 */
     private String name;
-    /* */
+    /* 真实姓名 */
     private String userName;
     /* */
     private String passWord;
@@ -29,6 +31,16 @@ public class UserMain {
     public UserMain() {
     }
 
+    public UserMain(String name, String userName, String passWord, Date tokenExpireDate, Date createDate, int effect, String remark) {
+        this.name = name;
+        this.userName = userName;
+        this.passWord = passWord;
+        this.tokenExpireDate = tokenExpireDate;
+        this.createDate = createDate;
+        this.effect = effect;
+        this.remark = remark;
+    }
+
     public UserMain(String name, String userName, String passWord, String token, Date tokenExpireDate, Date createDate, Date accountExpireDate, int effect, String phone, String remark) {
         this.name = name;
         this.userName = userName;
@@ -41,6 +53,20 @@ public class UserMain {
         this.phone = phone;
         this.remark = remark;
     }
+
+    /*public UserMain(int id, String name, String userName, String passWord, String token, Date tokenExpireDate, Date createDate, Date accountExpireDate, int effect, String phone, String remark) {
+        this.id = id;
+        this.name = name;
+        this.userName = userName;
+        this.passWord = passWord;
+        this.token = token;
+        this.tokenExpireDate = tokenExpireDate;
+        this.createDate = createDate;
+        this.accountExpireDate = accountExpireDate;
+        this.effect = effect;
+        this.phone = phone;
+        this.remark = remark;
+    }*/
 
     public String getName() {
         return name;
@@ -120,5 +146,14 @@ public class UserMain {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    // 有set才能附上值
+    public void setId(int id) {
+        this.id = id;
     }
 }

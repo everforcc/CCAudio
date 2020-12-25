@@ -1,6 +1,7 @@
 package cn.cc.ccaudio.config;
 
 import cn.cc.ccaudio.component.LoginHandlerInterceptor;
+import cn.cc.ccaudio.constant.Constant_File;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,11 +14,17 @@ import java.util.List;
 @Configuration
 public class WebLoginConfig implements WebMvcConfigurer {
 
-    // 这个暂时不需要
-    /*@Override
+    // 最后还是要用这个，直接映射文件位置
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/file/**").addResourceLocations("file:F:/resources/2.图片/heard/");
-    }*/
+        String filePath="";
+        if(System.getProperty("os.name").startsWith("Windows")){
+            filePath = "E:/java/audio/";
+        }else {
+            filePath = "/tmp/audio/";
+        }
+        registry.addResourceHandler(Constant_File.fileMapPath).addResourceLocations(Constant_File.fileLocalPath + filePath);
+    }
 
     @Bean
     public LoginHandlerInterceptor authInterceptor() {

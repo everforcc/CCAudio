@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cc.ccaudio.dao.UserAudioMarkMapper">
+
+    <select id="queryMark" resultType="cn.cc.ccaudio.dto.UserAudioMark">
+    SELECT * FROM useraudiomark e
+    WHERE 1=1
+    and  e.`username`=#{userName }
+    <if test="fileRealName!=null and fileRealName!=''">
+    AND e.`filerealname`=#{fileRealName }
+    </if>
+    </select>
+
+    <select id="queryMarkCount" resultType="int">
+    SELECT count(*) FROM useraudiomark where username = #{userName } and mark = 1
+    </select>
+
+
+    <insert id="insertMark" >
+        INSERT INTO  useraudiomark
+        (username, filerealname, markdate, mark)
+        VALUES
+        (#{userName },#{fileRealName },#{markDate},#{mark})
+    </insert>
+
+    <update id="updateMark">
+        UPDATE `useraudiomark`
+        SET
+        `markdate` = #{markDate },
+        `mark` = #{mark }
+        WHERE username=#{userName } and filerealname=#{fileRealName};
+    </update>
+
+</mapper>

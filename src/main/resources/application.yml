@@ -1,7 +1,8 @@
 spring:
   datasource:
     username: root
-    password: c.c.
+    password: c.c.5664
+    ##password: c.c.
     url: jdbc:mysql://127.0.0.1:3306/ccaudio?characterEncoding=UTF-8&&serverTimezone=GMT # 编码和时区
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource # 切换数据源
@@ -24,8 +25,12 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: 20
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 mybatis:
-  # 指定全局配置文件位置
+  # 指定全局配置文件位置  便于管理和扫描
   config-location: classpath:mybatis/mybatis-config.xml
   # 指定sql映射文件位置
   mapper-locations: classpath:mybatis/mapper/*.xml
@@ -35,6 +40,8 @@ server:
     connection-timeout: 600s
   servlet:
     context-path: /
+
+
 
 #    schema:
 #      - classpath:sql/department.sql

@@ -3,6 +3,9 @@ package cn.cc.ccaudio.utils;
 import cn.cc.ccaudio.constant.StatusEnum;
 import com.alibaba.fastjson.JSON;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 此类用于所有返回的情况 code和msg不允许为空
  */
@@ -42,6 +45,14 @@ public class ReturnObj {
 
     public void setData(Object data) {
         this.data = data;
+    }
+
+    public void setData(int totalNum,int pageNum,Object data) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("totalNum",totalNum);
+        map.put("pageNum",pageNum);
+        map.put("obj",data);
+        this.data = map;
     }
 
     public void setStatusEnum(StatusEnum statusEnum){

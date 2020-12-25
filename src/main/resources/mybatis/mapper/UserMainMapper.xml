@@ -12,12 +12,44 @@
         SELECT * FROM usermain e WHERE e.userName=#{userName} AND e.password=#{passWord} AND  e.effect=1
     </select>
 
-    <select id="findUserByToken" resultType="cn.cc.ccaudio.dto.UserMain">
+    <select id="queryUserList" resultType="cn.cc.ccaudio.dto.UserMain">
+        SELECT * FROM usermain e WHERE
+        e.`effect` = 1
+        <if test="like!=null and like!=''">
+            and ( e.`name` LIKE '%' #{like} '%' OR e.`username` LIKE '%' #{like} '%')
+        </if>
+        LIMIT #{page},5 ;
+    </select>
+
+    <select id="queryUserByToken" resultType="cn.cc.ccaudio.dto.UserMain">
         SELECT * FROM usermain e WHERE e.token=#{token}
+    </select>
+
+    <select id="queryUserByID" resultType="cn.cc.ccaudio.dto.UserMain">
+        SELECT * FROM usermain e WHERE e.id=#{id}
+    </select>
+
+    <select id="queryUserCount" resultType="int">
+        SELECT COUNT(*) FROM usermain e WHERE  e.`effect`=1
+        <if test="like!=null and like!=''">
+        and ( e.`name` LIKE '%' #{like} '%' OR e.`username` LIKE '%' #{like} '%')
+        </if>
     </select>
 
     <update id="updateTokenByUserName">
         update usermain e set e.token=#{token} where e.id=#{id}
     </update>
+
+    <update id="updateUserMsgByID">
+        UPDATE usermain e SET e.`password`=#{passWord},e.`remark`=#{remark} WHERE e.id=#{id}
+    </update>
+
+
+    <insert id="insertUser">
+        INSERT INTO `ccaudio`.`usermain` (
+        `name`,`username`,  `password`,  `createDate`,  `accountexpiredate`,  `effect`,    `remark`) VALUES
+        (#{name},#{userName},#{passWord},NOW(), #{accountExpireDate}, 1,  #{remark})
+    </insert>
+
 
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class CCaudioApplication {
 
+	// 做完后修改前端所有文件名，防止被猜出来
 	public static void main(String[] args) {
 		SpringApplication.run(CCaudioApplication.class, args);
 	}

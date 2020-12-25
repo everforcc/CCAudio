@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cc.ccaudio.dao.AudioFileMainMapper">
+
+    <!-- 列表查询 -->
+    <select id="queryAudioLike" resultType="cn.cc.ccaudio.dto.AudioFileMain">
+        SELECT
+        (SELECT a.filerealname FROM useraudiomark a WHERE a.`filerealname`= e.`realname` AND a.`username`='admin' AND a.`mark`='1')&lt;=&gt;NULL mark
+        ,e.*
+        FROM audiofilemain e WHERE 1=1
+        <if test="like!=null and like!=''">
+        e.`realname` LIKE '%' #{like} '%'
+        </if>
+        ORDER BY e.realname
+        LIMIT #{start},#{size}
+    </select>
+
+    <!-- 历史记录的几条 -->
+    <select id="queryForHistory" resultType="cn.cc.ccaudio.dto.AudioFileMain">
+        SELECT
+        (SELECT a.filerealname FROM useraudiomark a WHERE a.`filerealname`= e.`realname` AND a.`username`='admin' AND a.`mark`='1')&lt;=&gt;NULL mark
+        ,e.*
+        FROM audiofilemain e
+        WHERE e.realname IN (SELECT a.filerealname FROM useraudiohistory a
+        WHERE a.`username` = #{userName }
+        <if test="fileRealName!=null and fileRealName!=''">
+        AND a.`filerealname`= #{fileRealName }
+        </if>
+        and 1=1 )
+        ORDER BY e.realname
+        LIMIT #{start},#{size}
+    </select>
+
+    <!-- 收藏的几条 -->
+    <select id="queryForMark" resultType="cn.cc.ccaudio.dto.AudioFileMain">
+        SELECT
+        (SELECT a.filerealname FROM useraudiomark a WHERE a.`filerealname`= e.`realname` AND a.`username`='admin' AND a.`mark`='1')&lt;=&gt;NULL mark
+        ,e.*
+        FROM audiofilemain e
+        WHERE e.realname IN (SELECT a.filerealname FROM useraudiomark a
+        WHERE a.`username` = #{userName }
+        <if test="fileRealName!=null and fileRealName!=''">
+            AND a.`filerealname`= #{fileRealName }
+        </if>
+        and a.mark = 1 )
+        ORDER BY e.realname
+        LIMIT #{start},#{size}
+    </select>
+
+    <!-- error -->
+    <select id="queryFileCount" resultType="int">
+        SELECT count(*) FROM audiofilemain
+    </select>
+
+    <select id="queryAudioByRealName" resultType="cn.cc.ccaudio.dto.AudioFileMain">
+        SELECT * FROM audiofilemain e WHERE e.`realname` = #{fileName}
+    </select>
+
+    <select id="insertAudioFile">
+        INSERT INTO ccaudio . audiofilemain
+        (realname, name, path, length, size, author, uploadtime, effect, remark)
+        /* 大小写要对应 */
+        VALUES (#{realName },#{name},#{path},#{length},#{size},#{author},#{uploadTime},#{effect},#{remark});
+    </select>
+
+</mapper>

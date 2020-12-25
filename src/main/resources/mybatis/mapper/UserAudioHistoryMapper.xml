@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cc.ccaudio.dao.UserAudioHistoryMapper">
+
+    <select id="queryHistory" resultType="cn.cc.ccaudio.dto.UserAudioHistory">
+    SELECT * FROM useraudiohistory e
+    WHERE 1=1
+    and  e.`username`=#{userName }
+    <if test="fileRealName!=null and fileRealName!=''">
+    AND e.`filerealname`=#{fileRealName }
+    </if>
+    </select>
+
+    <select id="queryHistoryCount" resultType="int">
+    SELECT count(*) FROM useraudiohistory where username = #{userName }
+    </select>
+
+
+    <insert id="insertHistory" >
+        INSERT INTO  useraudiohistory
+        (username, filerealname, lastdate, listencount)
+        VALUES
+        (#{userName },#{fileRealName },#{lastDate},#{listenCount})
+    </insert>
+
+    <update id="updateHistory">
+        UPDATE `useraudiohistory`
+        SET
+        `lastdate` = #{lastDate },
+        `listencount` = #{listenCount }
+        WHERE username=#{userName } and filerealname=#{fileRealName};
+    </update>
+
+</mapper>
