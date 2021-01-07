@@ -1,10 +1,12 @@
 package cn.cc.ccaudio.service;
 
+import cn.cc.ccaudio.utils.ReturnObj;
+
 public interface UserAudioMarkService {
 
-    public void modifyUserAudioMark(String userName,String fileName);
+    void modifyUserAudioMark(String userName,String fileName);
 
-    public String addUserAudioMark(String userName,String fileName,int mark);
+    ReturnObj addUserAudioMark(String userName, String fileName, int mark);
 
-    public String findUserAudioMark(String userName,String fileName,int currentPage,int size);
+    ReturnObj findUserAudioMark(String userName,String fileName,int currentPage,int size);
 }

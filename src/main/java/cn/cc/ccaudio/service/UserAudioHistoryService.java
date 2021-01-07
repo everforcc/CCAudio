@@ -1,10 +1,12 @@
 package cn.cc.ccaudio.service;
 
+import cn.cc.ccaudio.utils.ReturnObj;
+
 public interface UserAudioHistoryService {
 
-    public void modifyUserAudioHistory(String userName,String fileName);
+    void modifyUserAudioHistory(String userName,String fileName);
 
-    public void addUserAudioHistory(String userName,String fileName);
+    void addUserAudioHistory(String userName,String fileName);
 
-    public String findUserAudioHistory(String userName,String fileName,int currentPage,int size);
+    ReturnObj findUserAudioHistory(String userName, String fileName, int currentPage, int size);
 }

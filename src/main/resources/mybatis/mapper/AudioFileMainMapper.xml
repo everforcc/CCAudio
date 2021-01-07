@@ -10,8 +10,9 @@
         (SELECT a.filerealname FROM useraudiomark a WHERE a.`filerealname`= e.`realname` AND a.`username`='admin' AND a.`mark`='1')&lt;=&gt;NULL mark
         ,e.*
         FROM audiofilemain e WHERE 1=1
+        /* 记得有个可以自动加and */
         <if test="like!=null and like!=''">
-        e.`realname` LIKE '%' #{like} '%'
+        and e.`realname` LIKE '%'  #{like} '%'
         </if>
         ORDER BY e.realname
         LIMIT #{start},#{size}
@@ -60,9 +61,15 @@
 
     <select id="insertAudioFile">
         INSERT INTO ccaudio . audiofilemain
-        (realname, name, path, length, size, author, uploadtime, effect, remark)
+        (realname, name, parent, path, length, size, author, uploadtime, effect, remark)
         /* 大小写要对应 */
-        VALUES (#{realName },#{name},#{path},#{length},#{size},#{author},#{uploadTime},#{effect},#{remark});
+        VALUES (#{realName },#{name},#{parent},#{path},#{length},#{size},#{author},#{uploadTime},#{effect},#{remark});
     </select>
+
+    <update id="updateAudioFileMain">
+        UPDATE  `ccaudio`.`audiofilemain` SET
+        `parent` = #{parent},  `remark` = #{remark}
+        WHERE `realname` = #{realName};
+    </update>
 
 </mapper>

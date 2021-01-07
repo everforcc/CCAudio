@@ -56,9 +56,11 @@ public class LoginHandlerInterceptor implements HandlerInterceptor {
             return false;
         }
         //3. token失效 开始没有这个失效时间会报错，但是不关键
-        if (userMain.getTokenExpireDate().compareTo(new Date())<1) {
-            setReturn(response, 400, "用户登录凭证已失效，请重新登录");
-            return false;
+        if(userMain.getTokenExpireDate()!=null) {
+            if (userMain.getTokenExpireDate().compareTo(new Date()) < 1) {
+                setReturn(response, 400, "用户登录凭证已失效，请重新登录");
+                return false;
+            }
         }
         //4. 账户到期，也可以不做看情况
 

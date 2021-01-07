@@ -9,19 +9,19 @@ import java.util.List;
 public interface UserMainService {
 
     /* 校验用户名 */
-    public String checkUserName(String userName);
+    ReturnObj checkUserName(String userName);
 
     /* 登录校验 */
-    public String findForLogin(String userName,String passWord);
+    ReturnObj findForLogin(String userName,String passWord);
 
-    public ReturnObj findUserList(int page,String like);
+    ReturnObj findUserList(int page,String like);
 
     /* 查看token 是否过期 */
-    public String findUserByToken(String token);
+    ReturnObj findUserByToken(String token);
 
-    public boolean cc(String token);
+    boolean cc(String token);
 
-    public ReturnObj modifyUserMsgByID(UserMain userMain);
+    ReturnObj modifyUserMsgByID(UserMain userMain);
 
-    public ReturnObj addUser(@Param("userMain") UserMain userMain);
+    ReturnObj addUser(@Param("userMain") UserMain userMain);
 }

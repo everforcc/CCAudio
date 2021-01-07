@@ -13,6 +13,7 @@ public class AudioFileMain {
     private String realName;
     private String name;
     private String path;
+    private String parent;
     private String length;
     private long size;
     private String author;
@@ -24,16 +25,19 @@ public class AudioFileMain {
     public AudioFileMain() {
     }
 
-    public AudioFileMain(String realName, String name, String path, String length, long size, String author, Date uploadTime, int effect, String remark) {
+    public AudioFileMain(int id, String realName, String name, String path, String parent, String length, long size, String author, Date uploadTime, int effect, String remark, String mark) {
+        this.id = id;
         this.realName = realName;
         this.name = name;
         this.path = path;
+        this.parent = parent;
         this.length = length;
         this.size = size;
         this.author = author;
         this.uploadTime = uploadTime;
         this.effect = effect;
         this.remark = remark;
+        this.mark = mark;
     }
 
     public String getRealName() {
@@ -50,6 +54,14 @@ public class AudioFileMain {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     public String getPath() {
@@ -114,5 +126,31 @@ public class AudioFileMain {
 
     public void setMark(String mark) {
         this.mark = mark;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "AudioFileMain{" +
+                "id=" + id +
+                ", realName='" + realName + '\'' +
+                ", name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                ", parent='" + parent + '\'' +
+                ", length='" + length + '\'' +
+                ", size=" + size +
+                ", author='" + author + '\'' +
+                ", uploadTime=" + uploadTime +
+                ", effect=" + effect +
+                ", remark='" + remark + '\'' +
+                ", mark='" + mark + '\'' +
+                '}';
     }
 }

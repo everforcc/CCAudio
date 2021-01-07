@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface UserAudioMarkMapper {
 
-    public int insertMark(UserAudioMark userAudioHistory);
+    int insertMark(UserAudioMark userAudioHistory);
 
-    public int updateMark(UserAudioMark userAudioHistory);
+    int updateMark(UserAudioMark userAudioHistory);
 
-    public int queryMarkCount(String userName);
+    int queryMarkCount(String userName);
 
-    public List<UserAudioMark> queryMark(@Param("userName")String userName,
+    List<UserAudioMark> queryMark(@Param("userName")String userName,
                                             @Param("fileRealName")String fileRealName);
 
 }

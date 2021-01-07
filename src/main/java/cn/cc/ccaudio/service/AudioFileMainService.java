@@ -1,12 +1,16 @@
 package cn.cc.ccaudio.service;
 
+import cn.cc.ccaudio.dto.AudioFileMain;
+import cn.cc.ccaudio.utils.ReturnObj;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AudioFileMainService {
 
-    public String findAudio(String like,int currentPage,int size);
+    ReturnObj findAudio(String like, int currentPage, int size);
 
-    public String saveAudioFile(MultipartFile[] fileList);
+    ReturnObj saveAudioFile(MultipartFile[] fileList,String type);
 
-    public String findAudioByRealName(String fileName,String userName);
+    ReturnObj findAudioByRealName(String fileName,String userName);
+
+    ReturnObj modifyAudioByRealName(AudioFileMain audioFileMain);
 }

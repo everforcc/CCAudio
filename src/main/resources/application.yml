@@ -2,7 +2,6 @@ spring:
   datasource:
     username: root
     password: c.c.5664
-    ##password: c.c.
     url: jdbc:mysql://127.0.0.1:3306/ccaudio?characterEncoding=UTF-8&&serverTimezone=GMT # 编码和时区
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource # 切换数据源

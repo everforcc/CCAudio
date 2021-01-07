@@ -22,7 +22,7 @@ public class UserController {
 
     // 所有controller 增加 非空 校验
 
-    private final static Logger logger = LoggerFactory.getLogger(FileController.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     UserMainService userMainService;
@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping("/addUser")
     public ReturnObj addUser(UserMain userMain){
-        logger.info("新增用户开始 >>> ");
+        logger.info("新增用户 start >>> ");
         ReturnObj returnObj = new ReturnObj();
 
         if(userMain!=null){
@@ -50,7 +50,7 @@ public class UserController {
             returnObj = new ReturnObj(StatusEnum.Status998);
         }
 
-        logger.info("新增用户结束 >>> ");
+        logger.info("新增用户 end >>> ");
 
         return returnObj;
     }
@@ -58,7 +58,7 @@ public class UserController {
     @GetMapping("/queryUserList")
     public ReturnObj queryUserList(int page,String like,String token){
 
-        logger.info("查询用户开始 >>> ");
+        logger.info("查询用户 start >>> ");
         ReturnObj returnObj = new ReturnObj();
 
         if(!userMainService.cc(token)){
@@ -73,7 +73,7 @@ public class UserController {
             returnObj = new ReturnObj(StatusEnum.Status998);
         }
 
-        logger.info("查询用户结束 >>> " + returnObj);
+        logger.info("查询用户 end >>> " + returnObj);
 
         return returnObj;
     }
@@ -81,14 +81,14 @@ public class UserController {
     @GetMapping("modifyUser")
     public ReturnObj modifyUser(UserMain userMain){
         ReturnObj returnObj = new ReturnObj();
-        logger.info("修改用户开始 >>> " + userMain.getId() + " >>> " + userMain.getPassWord());
+        logger.info("修改用户开始 start >>> " + userMain.getId() + " >>> " + userMain.getPassWord());
 
         if(userMain != null){
            returnObj = userMainService.modifyUserMsgByID(userMain);
         }else {
             returnObj = new ReturnObj(StatusEnum.Status998);
         }
-        logger.info("修改用户结束 >>> ");
+        logger.info("修改用户 end >>> " + returnObj);
         return returnObj;
     }
 

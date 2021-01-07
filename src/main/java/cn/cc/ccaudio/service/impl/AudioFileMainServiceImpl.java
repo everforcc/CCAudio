@@ -12,6 +12,7 @@ import cn.cc.ccaudio.exception.DefiFileSaveException;
 import cn.cc.ccaudio.service.AudioFileMainService;
 import cn.cc.ccaudio.utils.IOUtils;
 import cn.cc.ccaudio.utils.ReturnObj;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -35,23 +37,24 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
     static final int MAXIMUM_CAPACITY = 1 << 10;
     static final DecimalFormat df = new DecimalFormat("0000");
     static final String separator = "/";
+
     Logger logger = LoggerFactory.getLogger(AudioFileMainServiceImpl.class);
 
-    @Autowired
+    @Resource
     AudioFileMainMapper audioFileMainMapper;
 
-
-    @Autowired
+    @Resource
     AudioFilePathMapper audioFilePathMapper;
 
-    @Autowired
+    @Resource
     UserAudioHistoryMapper userAudioHistoryMapper;
 
     // 查总数
 
     // 模糊分页查询
     @Override
-    public String findAudio(String like, int currentPage, int size) {
+    public ReturnObj findAudio(String like, int currentPage, int size) {
+        logger.info("");
         ReturnObj returnObj = new ReturnObj();
         logger.info(like + "," + currentPage + "," + size);
         List<AudioFileMain> audioFileMains = audioFileMainMapper.queryAudioLike(like, (currentPage -1) * size, size);
@@ -66,7 +69,8 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
             returnObj.setCode("00");
             returnObj.setValue("没查到数据");
         }
-        return returnObj.toString();
+        logger.info("" + returnObj);
+        return returnObj;
     }
 
 
@@ -74,7 +78,7 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
 
     //存文件只有后台一人，不可以同时操作
     @Override
-    public synchronized String saveAudioFile(MultipartFile[] fileList) {
+    public synchronized ReturnObj saveAudioFile(MultipartFile[] fileList,String type) {
         StringBuffer returnMsg = new StringBuffer("");
         // 可以同时上传文件，但是建议不要，可能会出错，出错会给提示，
         // 但是逻辑完美的话应该也不会出错
@@ -90,7 +94,7 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
                 List<AudioFileMain> audioFileMainList = audioFileMainMapper.queryAudioByRealName(realName);
                 if (audioFileMainList.size() == 0) {
 
-                    AudioFilePath audioFilePath = audioFilePathMapper.querySequence("1");
+                    AudioFilePath audioFilePath = audioFilePathMapper.querySequence(type);
 
                     if(audioFilePath.getFileName() < MAXIMUM_CAPACITY){
                         audioFilePath.setFileName(audioFilePath.getFileName() + 1);
@@ -112,7 +116,7 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
                     audioFileMain.setName(rename);
                     audioFileMain.setSize(file.getSize());
                     audioFileMain.setLength(mp3Time);
-
+                    audioFileMain.setParent(type);
                     // 自定义异常
                     audioFileMainMapper.insertAudioFile(audioFileMain);
                     logger.info("文件" + realName + "上传成功");
@@ -138,12 +142,12 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
             }
         }
         ReturnObj returnObj = new ReturnObj(StatusEnum.Status200,returnMsg.toString());
-        return returnObj.toString();
+        return returnObj;
     }
 
     // 返回文件路径 这个位置只能查出来一条，前面逻辑严谨的话，这里不可能出错，但是为了防止随便搞，所以加判断
     @Override
-    public String findAudioByRealName(String fileName, String userName) {
+    public ReturnObj findAudioByRealName(String fileName, String userName) {
         ReturnObj returnObj = new ReturnObj();
         logger.info("获取文件路径:" + fileName);
         List<AudioFileMain> audioFileMainList = audioFileMainMapper.queryAudioByRealName(fileName);
@@ -166,7 +170,22 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
             returnObj.setStatusEnum(StatusEnum.Status998);
             returnObj.setData(Constant_Common.parameterError);
         }
-        return returnObj.toString();
+        return returnObj;
+    }
+
+    @Override
+    public ReturnObj modifyAudioByRealName(AudioFileMain audioFileMain) {
+        ReturnObj returnObj = new ReturnObj();
+        if (audioFileMain != null && StringUtils.isNotEmpty(audioFileMain.getRealName())) {
+            List<AudioFileMain> audioFileMainList = audioFileMainMapper.queryAudioByRealName(audioFileMain.getRealName());
+            if (audioFileMainList.size() == 1) {
+                audioFileMainMapper.updateAudioFileMain(audioFileMain);
+                returnObj.setStatusEnum(StatusEnum.Status200);
+                return returnObj;
+            }
+        }
+        returnObj.setStatusEnum(StatusEnum.Status998);
+        return returnObj;
     }
 
     // 更新历史记录

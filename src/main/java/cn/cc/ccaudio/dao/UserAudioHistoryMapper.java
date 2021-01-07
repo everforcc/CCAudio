@@ -17,12 +17,12 @@ public interface UserAudioHistoryMapper {
 
     // 用户名和文件名组合唯一，先加个索引
 
-    public int insertHistory(UserAudioHistory userAudioHistory);
+    int insertHistory(UserAudioHistory userAudioHistory);
 
-    public int updateHistory(UserAudioHistory userAudioHistory);
+    int updateHistory(UserAudioHistory userAudioHistory);
 
-    public int queryHistoryCount(String userName);
+    int queryHistoryCount(String userName);
 
-    public List<UserAudioHistory> queryHistory(@Param("userName")String userName,
+    List<UserAudioHistory> queryHistory(@Param("userName")String userName,
                                                @Param("fileRealName")String fileRealName);
 }

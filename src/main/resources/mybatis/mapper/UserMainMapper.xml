@@ -47,8 +47,8 @@
 
     <insert id="insertUser">
         INSERT INTO `ccaudio`.`usermain` (
-        `name`,`username`,  `password`,  `createDate`,  `accountexpiredate`,  `effect`,    `remark`) VALUES
-        (#{name},#{userName},#{passWord},NOW(), #{accountExpireDate}, 1,  #{remark})
+        `name`,`username`,  `password`,  `createDate`, `tokenexpiredate`, `accountexpiredate`,  `effect`,    `remark`) VALUES
+        (#{name},#{userName},#{passWord},NOW(), #{tokenExpireDate},#{accountExpireDate}, 1,  #{remark})
     </insert>
 
 

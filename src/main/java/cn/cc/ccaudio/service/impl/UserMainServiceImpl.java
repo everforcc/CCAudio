@@ -20,53 +20,56 @@ import java.util.*;
 @Transactional // 事务的注解
 public class UserMainServiceImpl implements UserMainService {
 
-    private final static Logger logger = LoggerFactory.getLogger(CCController.class);
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource
     private UserMainMapper userMainMapper;
 
     @Override
-    public String checkUserName(String userName) {
+    public ReturnObj checkUserName(String userName) {
         ReturnObj returnObj = new ReturnObj();
         UserMain userMain = userMainMapper.checkUserName(userName);
         if(userMain==null){
             // 没有这个用户
             returnObj.setStatusEnum(StatusEnum.Status005);
-            return returnObj.toString();
         }else {
             returnObj.setStatusEnum(StatusEnum.Status200);
-            return returnObj.toString();
         }
+        return returnObj;
     }
 
     @Override
-    public String findForLogin(String userName,String passWord) {
+    public ReturnObj findForLogin(String userName,String passWord) {
         ReturnObj returnObj = new ReturnObj();
         //先检查用户是否存在，如果存在那么生成token，如果不存在就返回密码错误
         UserMain userMain = userMainMapper.queryForLogin(userName,passWord);
         if(userMain==null){
             returnObj.setStatusEnum(StatusEnum.Status003);
-            return returnObj.toString();
         }else {
             String token = UUID.randomUUID().toString();
             userMain.setToken(token);
 
-            Date date=new Date();//取时间
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTime(date);
-            calendar.add(calendar.DATE,365);// 默认一年
-            date=calendar.getTime();
-            userMain.setTokenExpireDate(date);
+            userMain.setTokenExpireDate(getNextDate());
 
             userMainMapper.updateTokenByUserName(userMain);
             // 返回token
             Map<String,String> map = new HashMap<>();
             map.put("token",token);
-
+            map.put("name",userName);
             returnObj.setStatusEnum(StatusEnum.Status200);
             returnObj.setData(map);
-            return JSON.toJSONString(returnObj);
         }
+        return returnObj;
+    }
+
+    // 先这样
+    private Date getNextDate(){
+        Date date=new Date();//取时间
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE,365);// 默认一年
+        date=calendar.getTime();
+        return date;
     }
 
     @Override
@@ -85,17 +88,16 @@ public class UserMainServiceImpl implements UserMainService {
     }
 
     @Override
-    public String findUserByToken(String token) {
+    public ReturnObj findUserByToken(String token) {
         ReturnObj returnObj = new ReturnObj();
         //先检查用户是否存在，如果存在那么生成token，如果不存在就返回密码错误
         UserMain userMain = userMainMapper.queryUserByToken(token);
         if(userMain==null){
             returnObj.setStatusEnum(StatusEnum.Status003);
-            return returnObj.toString();
         }else {
             returnObj.setStatusEnum(StatusEnum.Status200);
-            return JSON.toJSONString(returnObj);
         }
+        return returnObj;
     }
 
     @Override
@@ -104,10 +106,7 @@ public class UserMainServiceImpl implements UserMainService {
         if(1 == userMain.getId()&&"admin".equals(userMain.getUserName())){
            return true;
         }
-
-
         logger.warn(userMain.getId() + " >>> 攻击系统 " );
-
         return false;
     }
 
@@ -135,7 +134,7 @@ public class UserMainServiceImpl implements UserMainService {
         UserMain userMainExist = userMainMapper.checkUserName(userMain.getUserName());
         if(userMainExist==null){
             // 没有这个用户
-
+            userMain.setTokenExpireDate(getNextDate());
             int result = userMainMapper.insertUser(userMain);
             System.out.println(result);
             returnObj.setStatusEnum(StatusEnum.Status200);

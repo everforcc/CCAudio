@@ -12,15 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service("userAudioHistoryService")
 @Transactional // 事务的注解
 public class UserAudioHistoryServiceImpl implements UserAudioHistoryService {
 
-    @Autowired
+    @Resource
     UserAudioHistoryMapper userAudioHistoryMapper;
-    @Autowired
+    @Resource
     AudioFileMainMapper audioFileMainMapper;
     @Override
     public void modifyUserAudioHistory(String userName, String fileName) {
@@ -34,7 +35,7 @@ public class UserAudioHistoryServiceImpl implements UserAudioHistoryService {
 
     // 查询历史
     @Override
-    public String findUserAudioHistory(String userName, String fileName,int currentPage,int size) {
+    public ReturnObj findUserAudioHistory(String userName, String fileName,int currentPage,int size) {
         ReturnObj returnObj;
         List<AudioFileMain> audioFileMainList = audioFileMainMapper.queryForHistory(userName,fileName,(currentPage - 1) * size,size);
         if(audioFileMainList==null){
@@ -45,6 +46,6 @@ public class UserAudioHistoryServiceImpl implements UserAudioHistoryService {
             returnObj = new ReturnObj(StatusEnum.Status200);
             returnObj.setData(totalNum,pageNum,audioFileMainList);
         }
-        return returnObj.toString();
+        return returnObj;
     }
 }

@@ -8,24 +8,25 @@ import java.util.List;
 
 public interface AudioFileMainMapper {
 
-    public List<AudioFileMain> queryAudioLike(@Param("like")String like,
+    List<AudioFileMain> queryAudioLike(@Param("like")String like,
                                          @Param("start")int start,
                                          @Param("size")int size);
 
-    public List<AudioFileMain> queryForHistory(@Param("userName")String userName,
+    List<AudioFileMain> queryForHistory(@Param("userName")String userName,
                                                @Param("fileRealName")String fileRealName,
                                               @Param("start")int start,
                                               @Param("size")int size);
 
-    public List<AudioFileMain> queryForMark(@Param("userName")String userName,
+    List<AudioFileMain> queryForMark(@Param("userName")String userName,
                                                @Param("fileRealName")String fileRealName,
                                                @Param("start")int start,
                                                @Param("size")int size);
 
-    public int queryFileCount();
+    int queryFileCount();
 
-    public List<AudioFileMain> queryAudioByRealName(@Param("fileName")String fileName);
+    List<AudioFileMain> queryAudioByRealName(@Param("fileName")String fileName);
 
-    public void insertAudioFile(AudioFileMain audioFileMain) throws DefiFileSaveException;
+    void insertAudioFile(AudioFileMain audioFileMain) throws DefiFileSaveException;
 
+    int updateAudioFileMain(AudioFileMain audioFileMain);
 }

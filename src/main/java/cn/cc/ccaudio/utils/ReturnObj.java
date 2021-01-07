@@ -11,17 +11,12 @@ import java.util.Map;
  */
 public class ReturnObj {
 
-
-
     /* 状态码 */
     private String code;
     /* 信息 */
     private String value;
     /* Obj */
     private Object data;
-
-    // get set 重要
-
 
     public String getCode() {
         return code;
