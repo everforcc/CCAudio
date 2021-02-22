@@ -13,6 +13,7 @@ public class AudioFileMain {
     private String realName;
     private String name;
     private String path;
+    /* 父级类型 + 文件类型 */
     private String parent;
     private String length;
     private long size;

@@ -37,6 +37,8 @@ public class WebLoginConfig implements WebMvcConfigurer {
         // 放行路径
         List<String> patterns = new ArrayList();;
         patterns.add("/login/**"); //如果没有登录只给这个请求
+        patterns.add("/cover/**");
+        patterns.add("/resource/**");
         //patterns.add("/**"); //如果没有登录只给这个请求
         registry.addInterceptor(authInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns(patterns);

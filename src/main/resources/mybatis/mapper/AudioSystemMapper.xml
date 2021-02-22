@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cc.ccaudio.dao.AudioSystemMapper">
+
+    <select id="queryEffect" resultType="cn.cc.ccaudio.dto.AudioSystem" >
+            SELECT * FROM audiosystem e WHERE e.`effect` = '1' ORDER BY e.`name` DESC LIMIT 0,1
+    </select>
+
+    <!-- 先不用 -->
+    <update id="updateAudioSystem">
+
+    </update>
+
+    <select id="queryFileCount" resultType="int">
+        SELECT count(*) FROM audiosystem
+    </select>
+
+    <insert id="insertAudioSystem">
+        INSERT INTO `ccaudio`.`audiosystem` (
+          `type`,
+          `path`,
+          `realName`,
+          `name`,
+          `effect`
+        )
+        VALUES
+          (
+            '1',
+            #{path},
+            #{realName},
+            #{name},
+            '1'
+          );
+    </insert>
+
+</mapper>

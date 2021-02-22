@@ -39,7 +39,11 @@ public class IOUtils {
         Path path = Paths.get(Constant_File.filePath + dir + rename);
         Files.write(path, bytes);
         logger.info(Constant_File.uploadSuccess);
-        return mp3Time(Constant_File.filePath + dir + rename);
+        if(rename.endsWith(".mp3")){
+            return mp3Time(Constant_File.filePath + dir + rename);
+        }else {
+            return "";
+        }
     }
 
     public static void delFile(String fileMapName){

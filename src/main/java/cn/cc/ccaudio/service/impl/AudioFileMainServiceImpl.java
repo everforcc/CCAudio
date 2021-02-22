@@ -4,9 +4,11 @@ import cn.cc.ccaudio.constant.Constant_Common;
 import cn.cc.ccaudio.constant.StatusEnum;
 import cn.cc.ccaudio.dao.AudioFileMainMapper;
 import cn.cc.ccaudio.dao.AudioFilePathMapper;
+import cn.cc.ccaudio.dao.AudioFileTypeMapper;
 import cn.cc.ccaudio.dao.UserAudioHistoryMapper;
 import cn.cc.ccaudio.dto.AudioFileMain;
 import cn.cc.ccaudio.dto.AudioFilePath;
+import cn.cc.ccaudio.dto.AudioFileType;
 import cn.cc.ccaudio.dto.UserAudioHistory;
 import cn.cc.ccaudio.exception.DefiFileSaveException;
 import cn.cc.ccaudio.service.AudioFileMainService;
@@ -49,15 +51,18 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
     @Resource
     UserAudioHistoryMapper userAudioHistoryMapper;
 
+    @Resource
+    AudioFileTypeMapper audioFileTypeMapper;
+
     // 查总数
 
     // 模糊分页查询
     @Override
-    public ReturnObj findAudio(String like, int currentPage, int size) {
+    public ReturnObj findAudio(String like, int currentPage, int size,String parentTypeFileType) {
         logger.info("");
         ReturnObj returnObj = new ReturnObj();
         logger.info(like + "," + currentPage + "," + size);
-        List<AudioFileMain> audioFileMains = audioFileMainMapper.queryAudioLike(like, (currentPage -1) * size, size);
+        List<AudioFileMain> audioFileMains = audioFileMainMapper.queryAudioLike(like, (currentPage -1) * size, size,parentTypeFileType);
 
         if (audioFileMains != null && audioFileMains.size() > 0) {
             int totalNum = audioFileMainMapper.queryFileCount();
@@ -78,7 +83,7 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
 
     //存文件只有后台一人，不可以同时操作
     @Override
-    public synchronized ReturnObj saveAudioFile(MultipartFile[] fileList,String type) {
+    public synchronized ReturnObj saveAudioFile(MultipartFile[] fileList,String type,String child) {
         StringBuffer returnMsg = new StringBuffer("");
         // 可以同时上传文件，但是建议不要，可能会出错，出错会给提示，
         // 但是逻辑完美的话应该也不会出错
@@ -110,13 +115,26 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
                     // 保存文件
                     String mp3Time = IOUtils.saveFile(file, path, rename);
 
+                    if("1".equals(type)){
+                        type = "parent";
+                    }else {
+                        type = "child";
+                    }
+
+                    AudioFileType audioFileType = audioFileTypeMapper.queryAduioType(type,child);
+                    if(audioFileType==null){
+                        logger.info("type:" + type + " >>> child:" + child);
+                        audioFileTypeMapper.insertAduioType(type,child);
+                    }
+
                     AudioFileMain audioFileMain = new AudioFileMain();
                     audioFileMain.setPath(path);
                     audioFileMain.setRealName(realName);
                     audioFileMain.setName(rename);
                     audioFileMain.setSize(file.getSize());
                     audioFileMain.setLength(mp3Time);
-                    audioFileMain.setParent(type);
+                    audioFileMain.setParent(type + child);
+                    audioFileMain.setRemark("");
                     // 自定义异常
                     audioFileMainMapper.insertAudioFile(audioFileMain);
                     logger.info("文件" + realName + "上传成功");
@@ -180,6 +198,21 @@ public class AudioFileMainServiceImpl implements AudioFileMainService {
             List<AudioFileMain> audioFileMainList = audioFileMainMapper.queryAudioByRealName(audioFileMain.getRealName());
             if (audioFileMainList.size() == 1) {
                 audioFileMainMapper.updateAudioFileMain(audioFileMain);
+                returnObj.setStatusEnum(StatusEnum.Status200);
+                return returnObj;
+            }
+        }
+        returnObj.setStatusEnum(StatusEnum.Status998);
+        return returnObj;
+    }
+
+    @Override
+    public ReturnObj deleteAudioFileMain(AudioFileMain audioFileMain) {
+        ReturnObj returnObj = new ReturnObj();
+        if (audioFileMain != null && StringUtils.isNotEmpty(audioFileMain.getRealName())) {
+            List<AudioFileMain> audioFileMainList = audioFileMainMapper.queryAudioByRealName(audioFileMain.getRealName());
+            if (audioFileMainList.size() == 1) {
+                audioFileMainMapper.deleteAudioFileMain(audioFileMain);
                 returnObj.setStatusEnum(StatusEnum.Status200);
                 return returnObj;
             }

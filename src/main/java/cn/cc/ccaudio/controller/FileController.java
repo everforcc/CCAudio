@@ -1,9 +1,9 @@
 package cn.cc.ccaudio.controller;
 
 import cn.cc.ccaudio.constant.Constant_Common;
-import cn.cc.ccaudio.constant.Constant_File;
 import cn.cc.ccaudio.constant.StatusEnum;
 import cn.cc.ccaudio.service.AudioFileMainService;
+import cn.cc.ccaudio.service.AudioFileTypeService;
 import cn.cc.ccaudio.service.UserAudioHistoryService;
 import cn.cc.ccaudio.service.UserAudioMarkService;
 import cn.cc.ccaudio.utils.IOUtils;
@@ -13,10 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,11 +36,12 @@ public class FileController {
     UserAudioHistoryService userAudioHistoryService;
     @Autowired
     UserAudioMarkService userAudioMarkService;
-
+    @Autowired
+    AudioFileTypeService audioFileTypeService;
 
     // 获取文件列表
     @GetMapping("/getFileList")
-    public ReturnObj getFileList(String userName,String fileName,int aduioType,int currentPage){
+    public ReturnObj getFileList(String userName,String fileName,int aduioType,int currentPage,String parentTypeFileType){ // 还得再加个目录
         //限定数字必须是数字的问题
 
         // 页面尺寸固定
@@ -59,8 +57,10 @@ public class FileController {
            // 123 列表，收藏，历史
            if(aduioType==1){
            // 查询文件列表
-               returnObj = audioFileMainService.findAudio(fileName,currentPage,size);
-           }else if(aduioType==2){
+               returnObj = audioFileMainService.findAudio(fileName,currentPage,size,parentTypeFileType);
+           }
+           // 以下功能暂时不用
+           else if(aduioType==2){
            //收藏列表
                returnObj = userAudioMarkService.findUserAudioMark(userName,fileName,currentPage,size);
            }else if(aduioType==3){
@@ -74,6 +74,43 @@ public class FileController {
         }
         // 类型异常，应该不会，就返回查询参数错误
         logger.info("获取文件列表 end >>> :" + aduioType + ",列表返回,"+returnObj);
+        return returnObj;
+    }
+
+    // 获取文件一级目录
+    @GetMapping("/getFileDir")
+    public ReturnObj getFileDir(String userName,String type,int currentPage){
+        // 页面尺寸固定
+        int size = 5;
+        // fileName 也就是 like 字段
+        logger.info("获取文件一级目录 start >>> :userName>>" + userName + ",type >> " + type + ",currentPage >> " + currentPage );
+        // 在这里组织好文件信息返回给前端
+        ReturnObj returnObj = new ReturnObj(StatusEnum.Status999);
+
+        //两类, 1.父母必听; 2.儿童必听
+        if(StringUtils.isNotEmpty(userName)&&StringUtils.isNotEmpty(type)){
+            returnObj = audioFileTypeService.findUserAudioDir(type,currentPage,size);
+        }
+
+        logger.info("获取文件一级目录 end >>> :" + type + ",列表返回,"+returnObj);
+        return returnObj;
+    }
+
+    // 获取文件二级目录
+    @GetMapping("/getFileChildDir")
+    public ReturnObj getFileChildDir(){
+        // 页面尺寸固定
+        int size = 5;
+        // fileName 也就是 like 字段
+        logger.info("获取文件二级目录 start >>> :userName>>"  + ",type >> "  + ",currentPage >> "  );
+        // 在这里组织好文件信息返回给前端
+        ReturnObj returnObj = new ReturnObj(StatusEnum.Status999);
+
+        //两类, 1.父母必听; 2.儿童必听 的子集
+
+        returnObj = audioFileTypeService.findUserAudioAllDir();
+
+        logger.info("获取文件二级目录 end >>> :" + ",列表返回,"+returnObj);
         return returnObj;
     }
 

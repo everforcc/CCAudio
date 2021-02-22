@@ -10,7 +10,8 @@ public interface AudioFileMainMapper {
 
     List<AudioFileMain> queryAudioLike(@Param("like")String like,
                                          @Param("start")int start,
-                                         @Param("size")int size);
+                                         @Param("size")int size,
+                                       @Param("parentTypeFileType")String parentTypeFileType);
 
     List<AudioFileMain> queryForHistory(@Param("userName")String userName,
                                                @Param("fileRealName")String fileRealName,
@@ -29,4 +30,7 @@ public interface AudioFileMainMapper {
     void insertAudioFile(AudioFileMain audioFileMain) throws DefiFileSaveException;
 
     int updateAudioFileMain(AudioFileMain audioFileMain);
+
+    int deleteAudioFileMain(AudioFileMain audioFileMain);
+
 }

@@ -6,6 +6,7 @@ import cn.cc.ccaudio.service.AudioFileMainService;
 import cn.cc.ccaudio.service.UserAudioHistoryService;
 import cn.cc.ccaudio.service.UserAudioMarkService;
 import cn.cc.ccaudio.utils.ReturnObj;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +27,22 @@ public class CCController {
     UserAudioHistoryService userAudioHistoryService;
     @Autowired
     UserAudioMarkService userAudioMarkService;
+
     // 在controller里面做基础的数据校验和返回
     @PostMapping("/upload") //MultipartFile
-    public ReturnObj upload(@RequestParam("fileList") MultipartFile[] fileList, String fileType){
+    public ReturnObj upload(@RequestParam("fileList") MultipartFile[] fileList, String fileType,String childType){
         ReturnObj returnObj = new ReturnObj();
-        logger.info("开始上传文件 start >>> :" + fileType );
+        logger.info("开始上传文件 start >>> fileType:[" + fileType + "] childType:[" + childType + "]" );
         // 校验用户名必须为 cc
 
+        if(StringUtils.isEmpty(fileType)||StringUtils.isEmpty(childType)){
+            returnObj.setStatusEnum(StatusEnum.Status998);
+            logger.info("fileType:" + fileType + "; childType=" + childType);
+            return  returnObj;
+        }
+
         if("1".equals(fileType)||"2".equals(fileType)){
-            returnObj = audioFileMainService.saveAudioFile(fileList,fileType);
+            returnObj = audioFileMainService.saveAudioFile(fileList,fileType,childType);
         }else {
             // 系统故障
             returnObj.setStatusEnum(StatusEnum.Status998);
@@ -57,6 +65,20 @@ public class CCController {
         }
 
         logger.info("结束修改文件 start >>> :" + returnObj );
+        return returnObj;
+    }
+
+    @GetMapping("/delete")
+    public ReturnObj deleteFile(AudioFileMain audioFileMain){
+        ReturnObj returnObj = new ReturnObj();
+        logger.info("开始删除文件 start >>> :" + audioFileMain );
+        if(returnObj!=null){
+            logger.info( audioFileMain.toString() );
+            returnObj = audioFileMainService.deleteAudioFileMain(audioFileMain);
+        }else {
+            returnObj.setStatusEnum(StatusEnum.Status998);
+        }
+        logger.info("结束删除文件 start >>> :" + returnObj );
         return returnObj;
     }
 

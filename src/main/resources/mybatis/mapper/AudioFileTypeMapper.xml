@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cc.ccaudio.dao.AudioFileTypeMapper">
+
+    <!--<update id="updateSequence">
+        UPDATE audiofilepath e SET e.`fileDir`=#{fileDir },e.`fileName`=#{fileName }
+        WHERE e.`id`=#{id }
+    </update>-->
+
+    <select id="queryAudioTypeList" resultType="cn.cc.ccaudio.dto.AudioFileType" >
+        SELECT * FROM audiofiletype e WHERE e.`parenttype`= #{parentType }
+        LIMIT #{start},#{size}
+    </select>
+
+
+    <select id="queryTypeCount" resultType="int">
+        SELECT COUNT(*) FROM audiofiletype e WHERE e.`parenttype` = #{parentType }
+    </select>
+
+    <select id="queryAduioType" resultType="cn.cc.ccaudio.dto.AudioFileType" >
+        SELECT * FROM audiofiletype e WHERE e.`parenttype`= #{parentType } AND e.filetype = #{childType }
+    </select>
+
+    <select id="insertAduioType">
+        INSERT INTO `ccaudio`.`audiofiletype` (`filetype`, `parenttype`)
+         VALUES
+        (#{childType }, #{parentType });
+    </select>
+
+</mapper>

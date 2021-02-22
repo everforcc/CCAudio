@@ -9,10 +9,13 @@
         SELECT
         (SELECT a.filerealname FROM useraudiomark a WHERE a.`filerealname`= e.`realname` AND a.`username`='admin' AND a.`mark`='1')&lt;=&gt;NULL mark
         ,e.*
-        FROM audiofilemain e WHERE 1=1
+        FROM audiofilemain e WHERE e.`effect`='1'
         /* 记得有个可以自动加and */
         <if test="like!=null and like!=''">
         and e.`realname` LIKE '%'  #{like} '%'
+        </if>
+        <if test="parentTypeFileType!=null and parentTypeFileType!=''">
+            and e.`parent` LIKE '%'  #{parentTypeFileType } '%'
         </if>
         ORDER BY e.realname
         LIMIT #{start},#{size}
@@ -30,6 +33,7 @@
         AND a.`filerealname`= #{fileRealName }
         </if>
         and 1=1 )
+        and e.`effect`='1'
         ORDER BY e.realname
         LIMIT #{start},#{size}
     </select>
@@ -46,17 +50,18 @@
             AND a.`filerealname`= #{fileRealName }
         </if>
         and a.mark = 1 )
+        and e.`effect`='1'
         ORDER BY e.realname
         LIMIT #{start},#{size}
     </select>
 
     <!-- error -->
     <select id="queryFileCount" resultType="int">
-        SELECT count(*) FROM audiofilemain
+        SELECT count(*) FROM audiofilemain e WHERE e.`effect`='1'
     </select>
 
     <select id="queryAudioByRealName" resultType="cn.cc.ccaudio.dto.AudioFileMain">
-        SELECT * FROM audiofilemain e WHERE e.`realname` = #{fileName}
+        SELECT * FROM audiofilemain e WHERE e.`realname` = #{fileName} and e.`effect`='1'
     </select>
 
     <select id="insertAudioFile">
@@ -69,6 +74,12 @@
     <update id="updateAudioFileMain">
         UPDATE  `ccaudio`.`audiofilemain` SET
         `parent` = #{parent},  `remark` = #{remark}
+        WHERE `realname` = #{realName};
+    </update>
+
+    <update id="deleteAudioFileMain">
+        UPDATE  `ccaudio`.`audiofilemain` SET
+        `effect` = '0'
         WHERE `realname` = #{realName};
     </update>
 
